@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const SuperType = function () {
+      this.property = true
+    }
+
+    SuperType.prototype.getSuperValue = function () {
+      return this.property
+    }
+
+    const SubType = function () {
+      this.subProperty = false
+      // 改变this指向，实现引用类型继承，不去调用，不共享
+      SuperType.call(this)
+    }
+
+    SubType.prototype = new SuperType()
+
+    SubType.prototype.getSubValue = function () {
+      return this.subProperty
+    }
+
+    var instance = new SubType()
+    alert(instance.getSuperValue())
+  </script>
+</body>
+</html>
