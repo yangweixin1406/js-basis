@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // let块级作用域，打印出来的是0
+    for (let i = (setTimeout(() => console.log(i), 2333), 0); i < 2; i++) {
+
+    }
+  </script>
+</body>
+</html>
