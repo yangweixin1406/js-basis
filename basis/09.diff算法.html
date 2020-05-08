@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div class="name" id="name">
+    <span>开始了吗</span>
+  </div>
+
+  <script>
+    // 上面的标签通过VNode表示
+    const obj1 = {
+      tagName: 'div',
+      attributes: {
+        'id': 'name',
+        'class': 'name'
+      },
+      children: [{
+        tagName: 'span',
+        attributes: null,
+        children: ['开始了吗']
+      }]
+    }
+
+    const obj2 = {
+      tagName: 'div',
+      attributes: {
+        'id': 'name',
+        'class': 'name'
+      },
+      children: [{
+        tagName: 'p',
+        attributes: null,
+        children: ['开始了吗']
+      }]
+    }
+    // VNode 类
+    class VNode {
+      constructor(tagName, attributes, children) {
+        this.tagName = tagName
+        this.attributes = attributes
+        this.children = children
+      }
+    }
+
+    function h(tagName, text, attributes, children) {
+      // 判断是否有text节点，直接返回text里面的内容
+      if (text) {
+        return text
+      }
+      return new VNode(tagName, attributes, children)
+    }
+    // 创建节点，通过传入实例化的vnode类
+    function createElement(vnode) {
+      let el = null
+      // 传入的是文本节点，创建文本元素
+      if (typeof vnode === 'string') {
+        el = document.createTextNode(vnode)
+        return el
+      }
+      // 还原dom
+      el = document.createElement(vnode.tagName)
+      // 还原attributes
+      for (let key in vnode.attributes) {
+        el.setAttribute(key, vnode.attributes[key])
+      }
+      // 还原孩子节点
+      const children = vnode.children.map(createElement)
+      children.forEach(child => {
+        el.appendChild(child)
+      })
+      return el
+    }
+
+  /*
+  * diff算法,传统的diff算法，需要跨级比较两个树之间的不同，时间复杂度是O(n^3),react提出只对同级比较
+  * 这样时间复杂度只有O(n)
+  * 
+  * diff算法同级比较，主要分为四种类型的对比
+  * 1.新建create：新的vnode中有这个节点，旧的没有
+  * 2.删除节点，新的vnode中没有这个节点，旧的有
+  * 3.替换replace，新的tagName和旧的tagName不同
+  * 4.更新update：除了上面三点外的不同，具体是比较attributes先，然后再比较children
+  */
+   function diff(newVNode, oldVNode) {
+     if (!newVNode) {
+      // 新节点没有，说明是删除旧节点的
+      return {
+        type: 'remove'
+      }
+     } else if (!oldVNode) {
+      //  新节点有，旧节点没有，说明是添加
+      return {
+        type: 'create',
+        newVNode
+      }
+     } else if (isDiff(newVNode, oldVNode)) {
+      // 对比两个tagName不同，说明是替换
+      return {
+        type: 'replace',
+        newVNode
+      }
+     } else {
+       // 其他情况是更新节点，要对比两个节点的attributes和孩子节点
+      return {
+        type: 'update',
+        attributes: diffAttributes(newVNode, oldVNode),
+        children: diffChildren(newVNode, oldVNode)
+      }
+     }
+   }
+
+  // 遍历孩子节点，调用diff算法
+   function diffChildren(newVNode, oldVNode) {
+    const patches = []
+    // 获取两个节点孩子长度最大的节点
+    var len = Math.max(newVNode.children.length, oldVNode.children.length);
+    for (let i = 0; i < len; i++) {
+      patches[i] = diff(newVNode.children[i], oldVNode.children[i])
+    }
+    return patches
+   }
+
+  // 对比attributes，只有两种情况，一种是新建/改变属性create，一种是删除属性remove
+   function diffAttributes(newVNode, oldVNode) {
+     let patches = []
+     const attrs = Object.assign({}, oldVNode.attributes, newVNode.attributes)
+     for (let key in attrs) {
+       let val = attrs[key]
+       if (oldVNode.attributes[key] !== val) {
+         patches.push({
+           type: 'create',
+           key,
+           value: newVNode.attributes[key]
+         })
+       } else if (!newVNode.attributes[key]) {
+         patches.push({
+           type: 'remove',
+           key
+         })
+       }
+     }
+     return patches
+   }
+
+  //  判断两个节点是否不同
+   function isDiff(newVNode, oldVNode) {
+    // 正常情况下只对比tagName,但是文本节点没有tagName，所以要考虑text节点
+    return (typeof newVNode === 'string' && newVNode !== oldVNode) || (typeof oldVNode === 'string' && newVNode !== oldVNode) || newVNode.tagName !== oldVNode.tagName
+   }
+
+   console.log(diff(null, obj1))
+
+  </script>
+</body>
+</html>
