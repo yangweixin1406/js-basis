@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- dom树1，oldVNode -->
+  <div>
+    <span>123</span>
+  </div>
+  <!-- dom树2，更新后的dom，newVNode -->
+  <div>
+    <p>456</span>
+  </div>
+  <script>
+    // diff算法只去比较同级的dom，就是div去和div比较，不会跨级去和p,span进行比较
+    class VNode {
+      constructor(tag, data, children, text, elem, context, componentOptions, asyncFactory) {
+        this.tag = tag
+        this.data = data
+        this.children = children
+        this.text = text
+        this.elem = elem
+        this.ns = undefined
+      }
+    }
+
+    function patch(oldVNode, VNode) {
+      if (sameVNode(oldVNode, VNode)) {
+
+      }
+    }
+
+    function patchVNode(oldVNode, VNode) {
+      const el = oldVNode.el = VNode.el
+      let i, OldCh = oldVNode.children, ch = VNode.children
+      if (oldVNode === VNode) return
+    }
+
+    // 判断两个虚拟节点是否一样
+    function sameVNode(a, b) {
+      return (
+        a.key === b.key &&
+        a.tag === b.tag &&
+        a.isComment === b.isComment &&
+        // 是否都定义了data
+        isDef(a.data) === isDef(b.data) &&
+        sameInputType(a, b)
+      )
+    }
+
+    // 是否定义的值存在
+    function isDef(data) {
+      return data !== undefined && data !== null
+    }
+
+    const isTextInputType = makeMap('text,number,password,search,email,tel,url')
+
+    // 遍历值是否在传入的字符串中
+    function makeMap(str, expectsLowerCase) {
+      const map = Object.create(null)
+      const list = str.split(',')
+      for (let i = 0; i < list.length; i++) {
+        map[list[i]] = true
+      }
+      return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
+    }
+
+    // 当标签为input的时候，type必须相同
+    function sameInputType(a, b) {
+      if (a.tag !== 'input') return true
+      let i
+      const typeA = isDef(i = a.data) && isDef(i = a.attrs) && i.type
+      const typeB = isDef(i = b.data) && isDef(i = b.attrs) && i.type
+      return typeA === typeB || isTextInputType(typeA) && isTextInputType(typeB)
+    }
+  </script>
+</body>
+</html>
