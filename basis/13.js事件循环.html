@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /*
+    js事件循环：
+    1.js在执行的时候会产生执行环境，这些执行环境会被顺序的加入到执行栈中，若遇到异步的代码，会被放到任务队列中
+    2.一旦执行栈为空，js就通过event loop拿出任务队列的代码，并放入执行栈中执行
+    */
+
+    /*
+    Event loop中的微任务和宏任务：不同的任务源会被分配到不同的任务队列中
+    宏任务：一个event loop有一个或多个任务队列，宏任务源非常广泛，比如ajax的onload，onclick事件，基本上我们经常设置的
+           绑定事件都是宏任务源，宏任务源包括：
+             setTimeout
+             setInterval
+             setImmediate
+             I/O
+             UI rending
+    微任务：微任务队列和宏任务队列有些相似，都是先进先出的队列，由指定的任务源去提供任务，不同的是一个event loop里只有一个微任务队列
+           微任务执行时机和宏任务也有所差异，微任务源包括：
+             process.nextClick
+             promise
+             Object.observe
+             Mutation.observe
+
+    微任务并不快于宏任务
+    */
+
+    /*
+    Event loop执行顺序：
+      1.执行同步代码（宏任务）
+      2.执行栈为空，查询是否有微任务需要执行
+      3.执行所有微任务
+      4.必要的话渲染UI
+      5.下一步event loop，执行宏任务的异步代码
+
+      每次的event loop至少需要4ms,这就是哪怕setTimeout(() => {}, 0),设置为0也会有4ms延迟，一个页面停留久了，计时器就会不准
+
+      ps:如果宏任务的异步代码存在大量计算和操作dom的话，需要更快的响应，可把操作放在微任务中
+    */
+
+    console.log('script part')
+
+    setTimeout(() => {
+      console.log('setTimeout context')
+    }, 0)
+
+    new Promise((resolve, reject) => {
+      console.log('Promise1')
+      resolve()
+    }).then(() => {
+      console.log('Promise2')
+    }).then(() => {
+      console.log('Promise3')
+    })
+
+    console.log('script end')
+  </script>
+</body>
+</html>
