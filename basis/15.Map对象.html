@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const info = {
+      name: 'Jack',
+      age: 16,
+      sex: '男',
+      hobbies: '抽烟，喝酒，烫头'
+    }
+    const mapKeys = ['姓名', '年龄', '性别', '爱好']
+    let result = new Map()
+    let i = 0
+    for (const key in info) {
+      result.set(mapKeys[i], info[key])
+      i++
+    }
+    console.log(result)
+  </script>
+</body>
+</html>
