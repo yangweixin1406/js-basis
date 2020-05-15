@@ -1,0 +1,1 @@
+Deno.mkdirSync('./new_dir')
