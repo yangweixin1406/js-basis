@@ -120,10 +120,12 @@ function Count (arr = []) {
 }
 
 // 十三.数组成员位置记录
+console.time('reduce')
 function Position(arr = [], val) {
   return arr.reduce((t, v, i) => (v === val && t.push(i), t), [])
 }
 Position([1, 3, 4, 6, 8, 2, 1, 4], 1)
+console.timeEnd('reduce')
 
 // 十四.数组成员所含关键字统计
 
@@ -137,4 +139,4 @@ async function AsyncTotal (arr = []) {
   }, Promise.resolve({}));
 }
 
-const asyncRes = await AsyncTotal([1, 3, 4]);
+// const asyncRes = await AsyncTotal([1, 3, 4]);
