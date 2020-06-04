@@ -14,6 +14,28 @@
   <div>
 
   </div>
-  <script src="./01.函数节流.js"></script>
+  <script src="./02.Vue3.0源码.js"></script>
+  <script>
+    const root = document.getElementById('app');
+    const btn = document.getElementById('btn');
+
+    const obj = reactive({
+      name: 'app',
+      age: 1
+    })
+
+    let double = computed(() => obj.age * 2)
+
+    effect(() => {
+      // 数据变化会出发函数
+      console.log('数据改变', obj.age);
+      root.innerHTML = `<h1>${obj.name}今年${obj.age}岁了，两倍的年龄是${double.value}}</h1>`
+    })
+
+    btn.addEventListener('click', () => {
+      // 出发set函数，执行effect
+      obj.age += 1;
+    })
+  </script>
 </body>
 </html>
