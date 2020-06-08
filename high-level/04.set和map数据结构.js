@@ -33,4 +33,7 @@ s.values()
 
 
 
-console.log(new Map([['name', '张三'], ['age', 28]]));
+console.log(new Map([['name', '张三', '李四'], ['age', 28]]));
+
+const set = new Set([1, 4, 6, 'name', 20]);
+console.log(set)
