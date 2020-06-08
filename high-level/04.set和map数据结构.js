@@ -31,9 +31,12 @@ s.values()
  * WeakSet 的成员只能是对象，不能是其他值
  */
 
+const map = new Map([['name', '张三', '李四'], ['age', 28]]);
+const obj = {}
+for (let [key, val] of map) {
+  obj[key] = val;
+}
 
-
-console.log(new Map([['name', '张三', '李四'], ['age', 28]]));
-
-const set = new Set([1, 4, 6, 'name', 20]);
-console.log(set)
+const newObj = new WeakMap();
+newObj.set([19], 10);
+console.log(newObj)
