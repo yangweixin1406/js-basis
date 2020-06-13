@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    div {
-      height: 5000px;
-    }
   </style>
 </head>
 <body>
-  <div id="app">
-    <button id="btn"></button>
-  </div>
+  <div id="app"></div>
+  <button id="btn">按钮</button>
   <script src="./02.Vue3.0源码.js"></script>
   <script>
     const root = document.getElementById('app');
@@ -29,8 +25,7 @@
 
     effect(() => {
       // 数据变化会触发函数
-      console.log('数据改变', obj.age);
-      root.innerHTML = `<h1>${obj.name}今年${obj.age}岁了，两倍的年龄是${double.value}}</h1>`
+      root.innerHTML = `<h1>${obj.name}今年${obj.age}岁了，两倍的年龄是${double.value}</h1>`
     })
 
     btn.addEventListener('click', () => {
