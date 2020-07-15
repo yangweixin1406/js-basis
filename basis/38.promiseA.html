@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const PENDING = 'pending'; // 等待态
+    const FULFILLED = 'fulfilled'; // 执行态
+    const REJECTED = 'rejected'; // 拒绝态
+
+    class MyPromise {
+      // 构造方法接收一个回调函数
+      constructor(executor) {
+        this._status = PENDING; // promise状态
+        this._resolveQueue = [] // then收集的执行成功的回调队列
+        this._rejectQueue = [] // then收集的执行失败的回调队列
+
+        let _resolve = (val) => {
+          if (this._status !== PENDING) return; // 状态只能从pending变为fulfilled或者rejected
+          this._status = FULFILLED; // 变更状态
+
+          // 从成功队列里取出回调函数依次执行
+          while (this._resolveQueue.length) {
+            const callBack = this._resolveQueue.shift();
+            callBack(val);
+          }
+        }
+
+        let _reject = (val) => {
+          if (this._status !== PENDING) return;
+          this._status = REJECTED;
+
+          while (this._rejectQueue.length) {
+            const callBack = this._rejectQueue.shift();
+            callBack(val);
+          }
+        }
+
+        // new Promise时立即执行 executor函数
+        executor(_resolve, _reject);
+      }
+
+      // 接收成功的回调和失败的回调
+      then(resolveFn, rejectFn) {
+        // return一个新的promise
+        return new MyPromise((resolve, reject) => {
+          // 把resolveFn重新包装一下，再push到数组中
+          const fulfilledFn = value => {
+            try {
+              // 执行第一个promise回调，拿到promise返回值
+              let x = resolveFn(value);
+
+              // 分类讨论返回值，如果是promise则等待promise执行完成，否则直接resolve
+              x instanceof MyPromise ? x.then(resolve, reject) : resolve(x);
+            } catch (error) {
+              reject(error);
+            }
+          }
+
+          this._resolveQueue.push(fulfilledFn);
+
+          const rejectedFn = value => {
+            try {
+              let x = rejectFn(value);
+
+              x instanceof MyPromise ? x.then(resolve, reject) : resolve(x);
+            } catch (error) {
+              reject(error);
+            }
+          }
+
+          this._rejectQueue.push(rejectedFn);
+        })
+      }
+    }
+
+    const p1 = new MyPromise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('result');
+      }, 1000)
+    })
+
+    p1.then(res => {
+      console.log(res);
+      return 3;
+    }).then(res => {
+      console.log(res);
+      return 10;
+    }).then(res => {
+      console.log(res);
+    })
+  </script>
+</body>
+</html>

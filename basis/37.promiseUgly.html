@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    class MyPromise {
+      // 构造方法接收一个回调函数
+      constructor(executor) {
+        this._resolveQueue = [] // then收集的执行成功的回调队列
+        this._rejectQueue = [] // then收集的执行失败的回调队列
+
+        let _resolve = (val) => {
+          // 从成功队列里取出回调函数依次执行
+          while (this._resolveQueue.length) {
+            const callBack = this._resolveQueue.shift();
+            callBack(val);
+          }
+        }
+
+        let _reject = (val) => {
+          while (this._rejectQueue.length) {
+            const callBack = this._rejectQueue.shift();
+            callBack(val);
+          }
+        }
+
+        // new Promise时立即执行 executor函数
+        executor(_resolve, _reject);
+      }
+
+      then(resolveFn, rejectFn) {
+        this._resolveQueue.push(resolveFn);
+        this._rejectQueue.push(rejectFn);
+      }
+    }
+
+    const p1 = new MyPromise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('result');
+      }, 1000)
+    })
+
+    p1.then(res => console.log(res));
+  </script>
+</body>
+</html>

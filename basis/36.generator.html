@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function * generatorForLoop (num) {
+      for (let i = 0; i < num; i += 1) {
+        yield console.log(i);
+      }
+    }
+
+    const genForLoop = generatorForLoop(5);
+
+    function * withYield(a) {
+      let b = 5;
+      yield a + b;
+      b = 6;
+      yield a * b;
+    }
+
+    const calcSix = withYield(6);
+
+    function * anotherGenerator(i) {
+      yield i + 1;
+      yield i + 2;
+      yield i + 3;
+    }
+
+    // function * generator (i){
+    //   yield * anotherGenerator(i);
+    // };
+    // const gen = generator(1);
+
+    function * generator(arr) {
+      for (const i in arr) {
+        yield i;
+        yield yield;
+        yield(yield);
+      }
+    }
+
+    const gen = generator([0,1]);
+
+    gen.next(); // {value: "0", done: false}
+    gen.next('A'); // {value: undefined, done: false}
+    gen.next('A'); // {value: "A", done: false}
+    gen.next('A'); // {value: undefined, done: false}
+    gen.next('A'); // {value: "A", done: false}
+    gen.next(); // {value: "1", done: false}
+    gen.next('B'); // {value: undefined, done: false}
+    gen.next('B'); // {value: "B", done: false}
+    gen.next('B'); // {value: undefined, done: false}
+    gen.next('B'); // {value: "B", done: false}
+    gen.next(); // {value: undefined, done: true}
+
+  </script>
+</body>
+</html>
