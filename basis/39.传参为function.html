@@ -9,13 +9,29 @@
   <script>
     const getData = (resolve, reject) => {
       resolve('Get my data');
+      reject('I am reject function');
     }
 
     const _resolve = (val) => {
       console.log(val);
     }
 
-    getData(_resolve);
+    getData((val) => {
+      console.log(val);
+    }, (reject) => {
+      console.log(reject);
+    });
+
+    Array.prototype.myCallBack = function (callBack) {
+      this.forEach((item, index) => {
+        callBack(item, index);
+      })
+    }
+
+    const myArr = [1, 4, 7];
+    myArr.myCallBack((item, index) => {
+      console.log(item, index);
+    });
   </script>
 </body>
 </html>

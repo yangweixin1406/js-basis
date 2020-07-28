@@ -14,6 +14,7 @@
         this._rejectQueue = [] // then收集的执行失败的回调队列
 
         let _resolve = (val) => {
+          console.log(456);
           // 从成功队列里取出回调函数依次执行
           while (this._resolveQueue.length) {
             const callBack = this._resolveQueue.shift();
@@ -33,6 +34,7 @@
       }
 
       then(resolveFn, rejectFn) {
+        console.log(123);
         this._resolveQueue.push(resolveFn);
         this._rejectQueue.push(rejectFn);
       }
